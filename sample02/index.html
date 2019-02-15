@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sample02</title>
+    <meta id="i18n_pagename" content="message">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- <link rel="stylesheet" type="text/css" href="<?= ST_STATIC_WEB ?>/css/materialize.min.css"> -->
+    <link rel="stylesheet" href="demo.css">
+    <script src="http://lib.sinaapp.com/js/jquery/3.1.0/jquery-3.1.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.4.4/dist/vue.min.js"></script>
+</head>
+<body>
+  <div class="mds-group">
+    <div class="updateAccount">
+      <div class="current">
+        <div class="title">Account Name</div>
+        <p>"<span>{{currentAccountName}}</span>"</p>
+      </div>
+      <div class="card" v-if="!currentAccountName">
+        <label for="setAccount">Set account name</label>
+        <input type="text" v-bind:value="currentAccountName" v-if="currentAccountName" disabled>
+        <input type="text" id="setAccount" v-else>
+        <a href="javascript:;" class="confirm">Update</a>
+      </div>
+      <div style="clear: both;"></div>
+      <ul class="updateAccount-about">
+        <li>
+          <h3>About TRON Account</h3>
+          <div>Each address can only set the account name once.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    //页面数据
+    var pageData = {
+      currentAddress : '',
+      currentAccountName : '',
+      currentAccount : {},
+      loading: true
+    };
+
+    //初始化tronweb
+    function initTronWeb()
+    {
+      return new Promise(function(resolve, reject){
+        let tries = 0;
+
+        // 初始化成功后执行
+        const loadFinish = function(){
+          pageData.currentAddress = tronWeb.defaultAddress.base58;
+          resolve(window.tronWeb);
+        };
+
+        let timer = setInterval(function(){
+          if(window.tronWeb){
+            clearInterval(timer);
+            if(!window.tronWeb.defaultAddress.base58){
+              window.tronWeb.on('addressChanged',function(){
+                return loadFinish();
+              });
+            }else{
+              return loadFinish();
+            }
+          }
+          if(tries > 10){
+            clearInterval(timer);
+            reject();
+          }
+        }, 100);
+      });
+    }
+
+    //错误处理
+    var error = function(e)
+    {
+      console.log('Load Error' + ' : %c' + e,'color:#f00');
+    };
+
+    var transError = function(e){
+      console.log(e);
+      console.log('Transaction Error' + ' : %c' + e,'color:#f00');
+      alert(e);
+      pageData.loading = false;
+    };
+
+    $(document).ready(function() {
+      //init vue
+      vue = new Vue({
+        el: '.mds-group',
+        data: pageData,
+      });
+
+      //init tronweb
+      //初始化tronweb
+      initTronWeb().then(function(tronWeb){
+        //获取用户投票信息
+        tronWeb.trx.getAccount(tronWeb.defaultAddress.base58).then(function(account){
+          pageData.currentAccount = account;
+          pageData.currentAccountName = account.account_name ? tronWeb.toUtf8(account.account_name) : '';
+          //全部加载完成
+          pageData.loading = false;
+
+          //绑定按钮
+          $('.confirm').on('click',function(){
+            let name = $('#setAccount').val();
+            tronWeb.transactionBuilder.updateAccount(name).then(function(transaction){
+              tronWeb.trx.sign(transaction).then(function(signedTransaction){
+                tronWeb.trx.sendRawTransaction(signedTransaction).then(function(){
+                  //交易成功
+                  alert('success');
+                  window.location.reload();
+                },transError);
+              },transError);
+            },transError);
+          });
+        },error);
+      },error);
+
+    });
+  </script>
+</body>

@@ -1,0 +1,77 @@
+#app_loading{
+  background:rgba(0,0,0,0.5);
+}
+.current{
+  text-align: center;
+  color: #c8c7cc;
+  padding: 30px 0;
+}
+.updateAccount{
+  background: linear-gradient(#435761,#8fa3ad);
+  min-height: 100vh;
+  overflow: hidden;
+  padding:24px 16px 34px;
+}
+.updateAccount .title{
+  text-align: center;
+  font-size: 24px;
+  color: #fff;
+}
+.updateAccount .current .title{
+  font-size: 16px;
+  padding: 10px 0;
+  color: #c8c7cc;
+}
+.updateAccount>.card{
+  padding:24px 24px 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  position: relative;
+  margin:0;
+}
+.updateAccount>.card input{
+  border-bottom:0.5px solid #dddce0!important;
+  margin: 20px 0 !important;
+}
+.updateAccount .number{
+  position: absolute;
+  right: 24px;
+  top:144px;
+  color: #c8c7cc;
+  font-size: 12px;
+}
+.updateAccount .confirm{
+  margin-top: 4px;
+  background: #ff9500;
+  border-radius: 12px;
+  display: block;
+  height: 44px;
+  line-height: 44px;
+  color: #fff;
+  font-size:16px;
+  text-align: center;
+}
+.updateAccount-about{
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  line-height: 20px;
+  padding-top: 32px;
+  border-top:0.5px solid rgba(255,255,255,0.2);
+  border-bottom:0.5px solid rgba(255,255,255,0.2);
+}
+.updateAccount-about h3{
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 20px;
+}
+.updateAccount-about>li{
+  padding-left:28px;
+  padding-bottom: 32px;
+}
+footer{
+  font-weight: 500;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  margin-top: 32px;
+}
